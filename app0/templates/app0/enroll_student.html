@@ -1,0 +1,188 @@
+{% extends 'base.html' %}
+
+{% block title %}Enroll Student{% endblock %}
+
+{% block content %}
+<div class="enroll-container">
+    <h2>Enroll Student: {{ student.name }}</h2>
+    
+    <div class="student-info-box">
+        <p><strong>Student:</strong> {{ student.name }}</p>
+        <p><strong>Email:</strong> {{ student.email }}</p>
+        <p><strong>Mobile:</strong> {{ student.mobile }}</p>
+    </div>
+    
+    <form method="post">
+        {% csrf_token %}
+        {% comment %} COURSE SELECTION {% endcomment %}
+        <div class="form-group">
+            <label for="course">Select Course:</label>
+            <select name="CourseId" id="course" required>
+                <option value="">-- Choose a Course --</option>
+                {% for course in courses %}
+                    <option value="{{ course.id }}">
+                        {{ course.course_code }} - {{ course.course_name }} ({{ course.credit }} credits)
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+        {% comment %} INSTRUCTOR SELECTION {% endcomment %}
+        <div class="form-group">
+            <label for="instructor">Select Instructor:</label>
+            <select name="InstructorId" id="instructor" required>
+                <option value="">-- Choose an Instructor --</option>
+                {% for instructor in instructors %}
+                    <option value="{{ instructor.id }}">
+                        {{ instructor.instructor_id }}: {{ instructor.name }} ({{ instructor.experience }} years exp)
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+        {% comment %} ENROLLMENT DATE SELECTION {% endcomment %}
+        <div class="form-group">
+            <label for="date">Enrollment Date:</label>
+            <input type="date" name="Enr_date" id="date" required value="{% now 'Y-m-d' %}">
+        </div>
+        
+        {% comment %} ENROLLMENT STATUS {% endcomment %}
+        <div class="form-group">
+            <label for="status">Enrollment Status:</label>
+            <select name="Enr_status" id="status">
+                <option value="True" selected>Active</option>
+                <option value="False">Inactive</option>
+            </select>
+        </div>
+        {% comment %} SUBMIT BUTTON {% endcomment %}
+        
+        <div class="form-actions">
+            <button type="submit">➕ Enroll Student</button>
+            <a href="{% url 'app0:home' %}" class="cancel-btn">Cancel</a>
+        </div>
+    </form>
+    
+    <!-- Show existing enrollments -->
+    <div class="enrollment-list">
+        <h3>Current Enrollments:</h3>
+        {% for enrollment in student.enrollment_set.all %}
+            <div class="enrollment-entry">
+                <strong>{{ enrollment.courseId.course_name }}</strong> 
+                with {{ enrollment.instructorId.name }}
+                <span class="enroll-date">({{ enrollment.enr_date }})</span>
+                <span class="status {% if enrollment.enr_status %}active{% else %}inactive{% endif %}">
+                    {% if enrollment.enr_status %}✅ Active{% else %}❌ Inactive{% endif %}
+                </span>
+            </div>
+        {% empty %}
+            <p class="no-enrollments">No current enrollments</p>
+        {% endfor %}
+    </div>
+</div>
+
+<style>
+  .enroll-container {
+    max-width: 600px;
+    margin: 50px auto;
+  }
+
+  .enroll-container h2 {
+    color: #1f2937;
+    margin-bottom: 20px;
+    text-align: center;
+  }
+
+  .student-info-box {
+    background: #f3f4f6;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+  }
+
+  .form-group {
+    margin-bottom: 15px;
+  }
+
+  label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: #374151;
+  }
+
+  select,
+  input[type="date"] {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+  }
+
+  select:focus,
+  input:focus {
+    outline: none;
+    border-color: #0ea5e9;
+    box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.1);
+  }
+
+  .form-actions {
+    margin-top: 20px;
+  }
+
+  .form-actions button {
+    background: #0ea5e9;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+  }
+
+  .form-actions button:hover {
+    background: #0284c7;
+  }
+
+  .cancel-btn {
+    background: #6b7280;
+    color: white;
+    padding: 10px 20px;
+    text-decoration: none;
+    border-radius: 4px;
+    margin-left: 10px;
+  }
+
+  .enrollment-list {
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px solid #ddd;
+  }
+
+  .enrollment-entry {
+    background: #e5f3ff;
+    padding: 10px;
+    margin: 5px 0;
+    border-radius: 4px;
+  }
+
+  .enroll-date {
+    color: #666;
+  }
+
+  .status {
+    font-weight: bold;
+    margin-left: 10px;
+  }
+
+  .status.active {
+    color: green;
+  }
+
+  .status.inactive {
+    color: red;
+  }
+
+  .no-enrollments {
+    color: #666;
+    font-style: italic;
+  }
+</style>
+{% endblock %}

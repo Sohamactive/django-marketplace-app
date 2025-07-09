@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+{% load socialaccount %}
+
+{% block title %}Login - Sohamactive{% endblock %}
+
+{% block content %}
+<style>
+  .login-container {
+    max-width: 400px;
+    margin: 100px auto;
+    padding: 40px;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    text-align: center;
+  }
+  
+  .login-title {
+    font-size: 2rem;
+    color: #4f46e5;
+    margin-bottom: 10px;
+  }
+  
+  .login-subtitle {
+    color: #666;
+    margin-bottom: 30px;
+  }
+  
+  .google-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    padding: 12px 20px;
+    background: #4285f4;
+    color: white;
+    text-decoration: none;
+    border-radius: 6px;
+    font-weight: 500;
+    transition: background 0.3s;
+    margin-bottom: 20px;
+  }
+  
+  .google-btn:hover {
+    background: #3367d6;
+    color: white;
+  }
+  
+  .google-icon {
+    margin-right: 10px;
+    font-size: 18px;
+  }
+</style>
+
+<div class="login-container">
+  <h1 class="login-title">Welcome to Sohamactive</h1>
+  <p class="login-subtitle">Please sign in to continue</p>
+  
+  <a href="{% provider_login_url 'google' %}" class="google-btn">
+    <span class="google-icon">🔐</span>
+    Continue with Google
+  </a>
+  
+  <p style="font-size: 0.9rem; color: #888;">
+    By continuing, you agree to our Terms of Service and Privacy Policy.
+  </p>
+</div>
+{% endblock %}

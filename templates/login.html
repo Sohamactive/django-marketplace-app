@@ -1,0 +1,281 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+</head>
+<body>
+<style>
+    body {
+        background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        position: relative;
+        overflow: hidden;
+    }
+
+    /* Animated Bubbles Background */
+    .bubbles {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: -1;
+        overflow: hidden;
+    }
+
+    .bubble {
+        position: absolute;
+        bottom: -100px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 50%;
+        opacity: 0.7;
+        animation: rise 15s infinite linear;
+    }
+
+    .bubble:nth-child(1) {
+        left: 10%;
+        width: 40px;
+        height: 40px;
+        animation-delay: 0s;
+        animation-duration: 12s;
+    }
+
+    .bubble:nth-child(2) {
+        left: 20%;
+        width: 20px;
+        height: 20px;
+        animation-delay: 2s;
+        animation-duration: 10s;
+    }
+
+    .bubble:nth-child(3) {
+        left: 25%;
+        width: 50px;
+        height: 50px;
+        animation-delay: 4s;
+        animation-duration: 14s;
+    }
+
+    .bubble:nth-child(4) {
+        left: 40%;
+        width: 60px;
+        height: 60px;
+        animation-delay: 0s;
+        animation-duration: 16s;
+    }
+
+    .bubble:nth-child(5) {
+        left: 70%;
+        width: 20px;
+        height: 20px;
+        animation-delay: 2s;
+        animation-duration: 8s;
+    }
+
+    .bubble:nth-child(6) {
+        left: 80%;
+        width: 120px;
+        height: 120px;
+        animation-delay: 3s;
+        animation-duration: 18s;
+    }
+
+    .bubble:nth-child(7) {
+        left: 32%;
+        width: 160px;
+        height: 160px;
+        animation-delay: 2s;
+        animation-duration: 20s;
+    }
+
+    .bubble:nth-child(8) {
+        left: 55%;
+        width: 20px;
+        height: 20px;
+        animation-delay: 4s;
+        animation-duration: 15s;
+    }
+
+    .bubble:nth-child(9) {
+        left: 25%;
+        width: 10px;
+        height: 10px;
+        animation-delay: 2s;
+        animation-duration: 9s;
+    }
+
+    .bubble:nth-child(10) {
+        left: 90%;
+        width: 160px;
+        height: 160px;
+        animation-delay: 11s;
+        animation-duration: 22s;
+    }
+
+    @keyframes rise {
+        0% {
+            bottom: -100px;
+            transform: translateX(0);
+        }
+        50% {
+            transform: translate(100px, -500px);
+        }
+        100% {
+            bottom: 1080px;
+            transform: translateX(-200px);
+        }
+    }
+
+    .login-box {
+        background: rgba(255, 255, 255, 0.95);
+        padding: 40px;
+        border-radius: 20px;
+        box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+        width: 100%;
+        max-width: 400px;
+        text-align: center;
+        position: relative;
+        backdrop-filter: blur(10px);
+        z-index: 1;
+    }
+
+    .home-btn {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        background: #00d4aa;
+        color: white;
+        padding: 8px 16px;
+        border: none;
+        border-radius: 25px;
+        text-decoration: none;
+        font-size: 14px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+
+    .home-btn:hover {
+        background: #00b894;
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0, 212, 170, 0.3);
+    }
+
+    .login-box h2 {
+        font-size: 2.2rem;
+        font-weight: 700;
+        color: #2d3436;
+        margin-bottom: 30px;
+        margin-top: 20px;
+    }
+
+    .login-box form {
+        text-align: left;
+    }
+
+    .login-box p {
+        margin-bottom: 20px;
+    }
+
+    .login-box label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 600;
+        color: #636e72;
+    }
+
+    .login-box input[type="text"],
+    .login-box input[type="password"],
+    .login-box input[type="email"] {
+        width: 100%;
+        padding: 15px 18px;
+        border: 2px solid #ddd;
+        border-radius: 12px;
+        font-size: 16px;
+        transition: all 0.3s ease;
+        box-sizing: border-box;
+        background: #f8f9fa;
+    }
+
+    .login-box input:focus {
+        outline: none;
+        border-color: #00d4aa;
+        box-shadow: 0 0 0 3px rgba(0, 212, 170, 0.1);
+        background: white;
+        transform: translateY(-1px);
+    }
+
+    .login-box button {
+        width: 100%;
+        padding: 15px;
+        background: linear-gradient(135deg, #6c5ce7, #a29bfe);
+        color: white;
+        border: none;
+        border-radius: 12px;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        margin-top: 15px;
+    }
+
+    .login-box button:hover {
+        background: linear-gradient(135deg, #5f3dc4, #9775fa);
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(108, 92, 231, 0.3);
+    }
+
+    .errorlist {
+        color: #e17055;
+        font-size: 14px;
+        list-style: none;
+        padding: 0;
+        margin: 5px 0;
+    }
+
+    @media (max-width: 480px) {
+        .login-box {
+            padding: 30px 20px;
+            margin: 20px;
+        }
+        
+        .home-btn {
+            position: static;
+            margin-bottom: 20px;
+            display: inline-block;
+        }
+    }
+</style>
+
+<div class="bubbles">
+    <div class="bubble"></div>
+    <div class="bubble"></div>
+    <div class="bubble"></div>
+    <div class="bubble"></div>
+    <div class="bubble"></div>
+    <div class="bubble"></div>
+    <div class="bubble"></div>
+    <div class="bubble"></div>
+    <div class="bubble"></div>
+    <div class="bubble"></div>
+</div>
+
+<div class="login-box">
+    <a href="{% url 'app1:homepage' %}" class="home-btn">🏠 Home</a>
+    <h2>Login</h2>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Login</button>
+    </form>
+</div>
+
+</body>
+</html>

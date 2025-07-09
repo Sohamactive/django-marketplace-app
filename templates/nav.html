@@ -1,0 +1,18 @@
+<nav class="navbar">
+    <div class="logo">Sohamactive</div>
+    <ul class="nav-links">
+      {% comment %} {% if user.is_authenticated %} {% endcomment %}
+        <li><a href="{% url 'app0:home' %}">Home</a></li>
+        <li><a href="{% url 'app0:about' %}">About Us</a></li>
+        <li><a href="{% url 'app0:contact' %}">Contact Us</a></li>
+        <li><a href="{% url 'app0:chat_bot_prompt' %}">chat_bot</a></li>
+        <li><a href="{% url 'app0:get_student_pdf' %}">student_pdf</a></li>
+        <li><a href="{% url 'app1:homepage' %}">market_place</a></li>
+
+        {% comment %} <li><span style="color: #00aced;">Hello, {{ user.first_name|default:user.username }}!</span></li>
+        <li><a href="{% url 'account_logout' %}">Logout</a></li> {% endcomment %}
+      {% comment %} {% else %}
+        <li><a href="{% url 'account_login' %}">Login</a></li>
+      {% endif %}
+    </ul> {% endcomment %}
+</nav>

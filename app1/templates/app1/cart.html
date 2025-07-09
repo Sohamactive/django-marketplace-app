@@ -1,0 +1,653 @@
+{% extends "app1/mp_base.html" %}
+
+{% block title %}Shopping Cart{% endblock %}
+
+{% block content %}
+<style>
+    .cart-content {
+        padding: 0;
+        margin: -2rem;
+    }
+
+    .cart-header {
+        background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+        color: white;
+        text-align: center;
+        padding: 60px 20px;
+        margin-bottom: 40px;
+    }
+
+    .cart-title {
+        font-size: 3rem;
+        font-weight: bold;
+        margin-bottom: 10px;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+    }
+
+    .cart-subtitle {
+        font-size: 1.2rem;
+        opacity: 0.9;
+    }
+
+    .cart-section {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 40px 20px;
+    }
+
+    .section-title {
+        font-size: 2rem;
+        font-weight: bold;
+        text-align: center;
+        margin-bottom: 40px;
+        color: #2c3e50;
+    }
+
+    .cart-grid {
+        display: grid;
+        grid-template-columns: 2fr 1fr;
+        gap: 40px;
+    }
+
+    .cart-items {
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        padding: 30px;
+    }
+
+    .cart-item {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        padding: 20px;
+        border-bottom: 2px solid #ecf0f1;
+        border-radius: 8px;
+        margin: 0 -20px 10px -20px;
+        transition: all 0.4s ease;
+        background: white;
+        border: 2px solid transparent;
+    }
+
+    .cart-item:hover {
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        border-bottom: 2px solid #8e44ad;
+        border: 2px solid #8e44ad;
+        box-shadow: 0 4px 15px rgba(142, 68, 173, 0.3);
+        transform: translateY(-2px);
+    }
+
+    .cart-item:hover .item-name {
+        color: #8e44ad;
+        transition: color 0.3s ease;
+    }
+
+    .cart-item:hover .item-price {
+        color: #2ecc71;
+        transform: scale(1.05);
+        transition: all 0.3s ease;
+    }
+
+    .cart-item:hover .item-image {
+        transform: scale(1.05);
+        transition: transform 0.3s ease;
+    }
+
+    .cart-item:last-child {
+        border-bottom: none;
+        margin-bottom: 0;
+    }
+
+    .cart-item:last-child:hover {
+        border-bottom: 2px solid #8e44ad;
+    }
+
+    .item-name {
+        font-size: 1.3rem;
+        font-weight: bold;
+        color: #2c3e50;
+        margin-bottom: 8px;
+        line-height: 1.4;
+        transition: color 0.3s ease;
+    }
+
+    .item-price {
+        font-size: 1.4rem;
+        font-weight: bold;
+        color: #27ae60;
+        transition: all 0.3s ease;
+    }
+
+    .item-image {
+        width: 100px;
+        height: 100px;
+        background: linear-gradient(45deg, #f8f9fa, #e9ecef);
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2.5rem;
+        flex-shrink: 0;
+        transition: transform 0.3s ease;
+    }
+
+    .item-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 12px;
+    }
+
+    .item-details {
+        flex: 1;
+    }
+
+    .item-description {
+        color: #7f8c8d;
+        font-size: 14px;
+        margin-bottom: 10px;
+        line-height: 1.5;
+    }
+
+    .quantity-controls {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        margin-right: 20px;
+    }
+
+    .qty-label {
+        color: #7f8c8d;
+        font-size: 14px;
+        font-weight: 600;
+    }
+
+    .qty-wrapper {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    /* 🎨 Uniform Button Styles */
+    .btn {
+        padding: 12px 20px;
+        border: none;
+        border-radius: 8px;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+    }
+
+    .qty-btn {
+        width: 35px;
+        height: 35px;
+        padding: 0;
+        border: 2px solid #8e44ad;
+        background: white;
+        color: #8e44ad;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: bold;
+        font-size: 16px;
+        transition: all 0.3s ease;
+    }
+
+    .qty-btn:hover {
+        background: #8e44ad;
+        border-color: #8e44ad;
+        color: white;
+        transform: translateY(-2px);
+    }
+
+    .qty-btn:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+        transform: none !important;
+    }
+
+    .cart-item.removing {
+        transition: all 0.5s ease;
+        opacity: 0;
+        transform: translateX(-100%);
+    }
+
+    .loading-overlay {
+        position: relative;
+    }
+
+    .loading-overlay::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(255,255,255,0.7);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.2rem;
+        color: #8e44ad;
+    }
+
+    .quantity {
+        font-size: 1.2rem;
+        font-weight: bold;
+        min-width: 30px;
+        text-align: center;
+        color: #2c3e50;
+    }
+
+    .btn-danger {
+        background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+        color: white;
+        border: 2px solid transparent;
+        font-size: 14px;
+        padding: 10px 15px;
+    }
+
+    .btn-danger:hover {
+        background: linear-gradient(135deg, #c0392b 0%, #a93226 100%);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(231, 76, 60, 0.3);
+    }
+
+    .cart-summary {
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        padding: 30px;
+        height: fit-content;
+        border: 2px solid transparent;
+        transition: all 0.3s ease;
+    }
+
+    .cart-summary:hover {
+        border: 2px solid #8e44ad;
+        box-shadow: 0 15px 35px rgba(142, 68, 173, 0.2);
+        transform: translateY(-2px);
+    }
+
+    .summary-title {
+        font-size: 1.5rem;
+        font-weight: bold;
+        color: #2c3e50;
+        margin-bottom: 25px;
+        text-align: center;
+        transition: color 0.3s ease;
+    }
+
+    .cart-summary:hover .summary-title {
+        color: #8e44ad;
+    }
+
+    .summary-row {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 15px;
+        font-size: 1rem;
+        color: #2c3e50;
+    }
+
+    .summary-label {
+        color: #7f8c8d;
+    }
+
+    .summary-value {
+        font-weight: 600;
+    }
+
+    .summary-total {
+        border-top: 2px solid #ecf0f1;
+        padding-top: 20px;
+        margin-top: 20px;
+        font-size: 1.4rem;
+        font-weight: bold;
+        color: #27ae60;
+    }
+
+    .btn-success {
+        width: 100%;
+        background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
+        color: white;
+        border: 2px solid transparent;
+        padding: 15px;
+        font-size: 1.1rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        box-shadow: 0 4px 15px rgba(39, 174, 96, 0.3);
+    }
+
+    .btn-success:hover {
+        background: linear-gradient(135deg, #229954 0%, #27ae60 100%);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(39, 174, 96, 0.4);
+    }
+
+    .btn-outline-purple {
+        width: 100%;
+        background: transparent;
+        color: #8e44ad;
+        border: 2px solid #8e44ad;
+        padding: 12px;
+        font-size: 1rem;
+        margin-top: 15px;
+    }
+
+    .btn-outline-purple:hover {
+        background: #8e44ad;
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 15px rgba(142, 68, 173, 0.3);
+    }
+
+    .empty-cart {
+        text-align: center;
+        padding: 80px 20px;
+        color: #7f8c8d;
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+    }
+
+    .empty-cart-icon {
+        font-size: 5rem;
+        margin-bottom: 20px;
+        opacity: 0.5;
+    }
+
+    .empty-text {
+        font-size: 1.3rem;
+        margin-bottom: 10px;
+        color: #2c3e50;
+    }
+
+    .empty-subtext {
+        color: #7f8c8d;
+        margin-bottom: 30px;
+    }
+
+    @media (max-width: 768px) {
+        .cart-title {
+            font-size: 2.2rem;
+        }
+        
+        .cart-grid {
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+        
+        .cart-item {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 15px;
+        }
+        
+        .quantity-controls {
+            margin-right: 0;
+            align-self: stretch;
+            justify-content: space-between;
+        }
+    }
+</style>
+
+<div class="cart-content">
+    {% comment %} <!-- Header -->
+    <div class="cart-header">
+        <h1 class="cart-title">Shopping Cart</h1>
+        <p class="cart-subtitle">Review your items and proceed to checkout</p>
+    </div> {% endcomment %}
+
+    <div class="cart-section">
+        <h2 class="section-title">Your Items</h2>
+        
+        <div class="cart-grid">
+            <!-- Cart Items -->
+            <div class="cart-items">
+                {% for cartitem in cartitems %}
+                <!-- Added data-cart-item-id attribute to enable AJAX operations on this cart item -->
+                <div class="cart-item" data-cart-item-id="{{ cartitem.id }}">
+                    <div class="item-image">
+                        {% if cartitem.product.image %}
+                            <img src="{{ cartitem.product.image.url }}" alt="{{ cartitem.product.name }}">
+                        {% else %}
+                            🎧
+                        {% endif %}
+                    </div>
+                    <div class="item-details">
+                        <div class="item-name">{{ cartitem.product.name }}</div>
+                        <div class="item-description">{{ cartitem.product.description }}</div>
+                        <div class="item-price">₹{{ cartitem.product.price }}</div>
+                    </div>
+                    <div class="quantity-controls">
+                        <div class="qty-label">Qty:</div>
+                        <div class="qty-wrapper">
+                            <!-- Added data-cart-item-id to decrease button for AJAX decrease functionality -->
+                            <button class="qty-btn decrease-btn" data-cart-item-id="{{cartitem.id}}">-</button>
+                            <span class="quantity">{{ cartitem.quantity }}</span>
+                            <!-- Added data-cart-item-id to increase button for AJAX increase functionality -->
+                            <button class="qty-btn increase-btn" data-cart-item-id="{{cartitem.id}}">+</button>
+                        </div>
+                    </div>
+                    <!-- Added data-cart-item-id to remove button for AJAX remove functionality -->
+                    <button class="btn btn-danger remove-btn" data-cart-item-id="{{cartitem.id}}">Remove</button>
+                </div>
+                {% endfor %}
+            </div>
+            
+            <!-- Cart Summary -->
+            <div class="cart-summary">
+                <div class="summary-title">Order Summary</div>
+                
+                <div class="summary-row">
+                    <!-- Added id="total-items" for easy JavaScript targeting and real-time updates -->
+                    <span class="summary-label">Subtotal (<span id="total-items">{{ total_item }}</span> items):</span>
+                    <!-- Added id="subtotal" for easy JavaScript targeting and real-time updates -->
+                    <span class="summary-value">₹<span id="subtotal">{{ subtotal }}</span></span>
+                </div>
+                <div class="summary-row">
+                    <span class="summary-label">Shipping:</span>
+                    <!-- Added id="shipping" for consistency (though shipping is fixed) -->
+                    <span class="summary-value">₹<span id="shipping">9.99</span></span>
+                </div>
+                <div class="summary-row">
+                    <span class="summary-label">Tax:</span>
+                    <!-- Added id="tax" for easy JavaScript targeting and real-time updates -->
+                    <span class="summary-value">₹<span id="tax">{{ tax }}</span></span>
+                </div>
+                <div class="summary-row">
+                    <span class="summary-label">Discount:</span>
+                    <!-- Added id="discount" for easy JavaScript targeting and real-time updates -->
+                    <span class="summary-value" style="color: #e74c3c;">₹<span id="discount">{{ discount }}</span></span>
+                </div>
+                
+                <div class="summary-row summary-total">
+                    <span>Total:</span>
+                    <!-- Added id="total" for easy JavaScript targeting and real-time updates -->
+                    <span>₹<span id="total">{{ total }}</span></span>
+                </div>
+                
+                <a href="{% url 'app1:checkout' %}"><button class="btn btn-success" hre>Proceed to Checkout</button></a>
+                <a href="{% url 'app1:homepage' %}" class="btn btn-outline-purple">Continue Shopping</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log('DOM loaded');
+        
+        // Get CSRF token - required for Django POST requests
+        // This function extracts the CSRF token from browser cookies
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+        
+        // Get the CSRF token for secure AJAX requests
+        const csrftoken = getCookie('csrftoken');
+        console.log('CSRF token:', csrftoken);
+        
+        // Main function to handle cart quantity updates via AJAX
+        // This function handles increase, decrease, and remove operations
+        function updateCartQuantity(cartItemId, action) {
+            console.log('Updating cart:', cartItemId, action);
+            
+            // Find the cart item element using the data-cart-item-id attribute
+            const cartItem = document.querySelector(`[data-cart-item-id="${cartItemId}"]`);
+            if (!cartItem) {
+                console.error('Cart item not found:', cartItemId);
+                return;
+            }
+            
+            // Get quantity display element and buttons for UI feedback
+            const quantitySpan = cartItem.querySelector('.quantity');
+            const buttons = cartItem.querySelectorAll('.qty-btn');
+            
+            // Disable buttons during AJAX request to prevent multiple clicks
+            buttons.forEach(btn => btn.disabled = true);
+            
+            // Make AJAX request to Django backend
+            fetch('{% url "app1:update_cart_quantity" %}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrftoken,  // Include CSRF token for security
+                },
+                body: JSON.stringify({
+                    cart_item_id: cartItemId,
+                    action: action  // 'increase', 'decrease', or 'remove'
+                })
+            })
+            .then(response => {
+                console.log('Response status:', response.status);
+                return response.json();
+            })
+            .then(data => {
+                console.log('Response data:', data);
+                
+                if (data.success) {
+                    if (data.removed) {
+                        // Item was removed - animate the removal
+                        cartItem.style.transition = 'all 0.5s ease';
+                        cartItem.style.opacity = '0';
+                        cartItem.style.transform = 'translateX(-100%)';
+                        
+                        // Remove the item from DOM after animation
+                        setTimeout(() => {
+                            cartItem.remove();
+                            
+                            // Check if cart is empty and reload page to show empty state
+                            const remainingItems = document.querySelectorAll('.cart-item');
+                            if (remainingItems.length === 0) {
+                                location.reload();
+                            }
+                        }, 500);
+                    } else {
+                        // Update quantity display and cart summary
+                        quantitySpan.textContent = data.new_quantity;
+                        updateCartSummary(data);
+                    }
+                } else {
+                    console.error('Error:', data.error);
+                    alert('Error: ' + data.error);
+                }
+            })
+            .catch(error => {
+                console.error('Fetch error:', error);
+                alert('An error occurred while updating the cart.');
+            })
+            .finally(() => {
+                // Re-enable buttons after request completes
+                buttons.forEach(btn => btn.disabled = false);
+            });
+        }
+        
+        // Function to update cart summary section with new totals
+        // This updates the displayed prices without page reload
+        function updateCartSummary(data) {
+            console.log('Updating summary with:', data);
+            
+            // Update total items count
+            const totalItemsSpan = document.getElementById('total-items');
+            if (totalItemsSpan) {
+                totalItemsSpan.textContent = data.total_items;
+            }
+            
+            // Update subtotal amount
+            const subtotalSpan = document.getElementById('subtotal');
+            if (subtotalSpan) {
+                subtotalSpan.textContent = data.subtotal.toFixed(2);
+            }
+            
+            // Update tax amount
+            const taxSpan = document.getElementById('tax');
+            if (taxSpan) {
+                taxSpan.textContent = data.tax.toFixed(2);
+            }
+            
+            // Update total amount
+            const totalSpan = document.getElementById('total');
+            if (totalSpan) {
+                totalSpan.textContent = data.total.toFixed(2);
+            }
+        }
+        
+        // Get all buttons and attach event listeners
+        const increaseButtons = document.querySelectorAll('.increase-btn');
+        const decreaseButtons = document.querySelectorAll('.decrease-btn');
+        const removeButtons = document.querySelectorAll('.remove-btn');
+        
+        console.log('Found buttons:', increaseButtons.length, decreaseButtons.length, removeButtons.length);
+        
+        // Add click event listeners to increase buttons
+        increaseButtons.forEach(button => {
+            button.addEventListener('click', function(e) {
+                e.preventDefault();  // Prevent default form submission
+                const cartItemId = this.dataset.cartItemId;
+                console.log('Increase clicked for:', cartItemId);
+                updateCartQuantity(cartItemId, 'increase');
+            });
+        });
+        
+        // Add click event listeners to decrease buttons
+        decreaseButtons.forEach(button => {
+            button.addEventListener('click', function(e) {
+                e.preventDefault();  // Prevent default form submission
+                const cartItemId = this.dataset.cartItemId;
+                console.log('Decrease clicked for:', cartItemId);
+                updateCartQuantity(cartItemId, 'decrease');
+            });
+        });
+        
+        // Add click event listeners to remove buttons
+        removeButtons.forEach(button => {
+            button.addEventListener('click', function(e) {
+                e.preventDefault();  // Prevent default form submission
+                const cartItemId = this.dataset.cartItemId;
+                console.log('Remove clicked for:', cartItemId);
+                
+                // Show confirmation dialog before removing
+                if (confirm('Are you sure you want to remove this item from your cart?')) {
+                    updateCartQuantity(cartItemId, 'remove');
+                }
+            });
+        });
+    });
+</script>
+{% endblock %}

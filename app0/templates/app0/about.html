@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+
+{% block title %}About Us - Sohamactive{% endblock title %}
+
+{% block content %}
+<style>
+  .about-container {
+    max-width: 900px;
+    margin: 40px auto;
+    padding: 20px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #333;
+    background-color: #f9f9f9;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+  }
+
+  .about-container h1 {
+    font-size: 2.5rem;
+    color: #4f46e5;
+    text-align: center;
+    margin-bottom: 20px;
+  }
+
+  .about-container h2 {
+    font-size: 1.5rem;
+    margin-top: 30px;
+    color: #333;
+    border-left: 4px solid #4f46e5;
+    padding-left: 10px;
+  }
+
+  .about-container p {
+    font-size: 1rem;
+    line-height: 1.7;
+    margin: 15px 0;
+  }
+
+  .about-container ul {
+    list-style: none;
+    padding-left: 0;
+    margin: 20px 0;
+  }
+
+  .about-container ul li {
+    background-color: #e0e7ff;
+    padding: 10px 15px;
+    margin: 10px 0;
+    border-left: 4px solid #4f46e5;
+    border-radius: 6px;
+    font-weight: 500;
+  }
+
+  .about-highlight {
+    font-weight: bold;
+    color: #1e3a8a;
+  }
+</style>
+
+<div class="about-container">
+  <h1>About Us</h1>
+
+  <p>Welcome to <span class="about-highlight">Sohamactive</span> — your trusted platform for staying productive, healthy, and focused in a digital world.</p>
+
+  <p>We are passionate about helping individuals like you develop better habits, improve well-being, and make the most of technology for personal growth. Whether you're a student, a professional, or just someone trying to live better, Sohamactive is here to support you on that journey.</p>
+
+  <h2>Our Mission</h2>
+  <p>To inspire and empower people to lead balanced, mindful, and meaningful lives through digital tools, healthy routines, and self-awareness.</p>
+
+  <h2>What We Offer</h2>
+  <ul>
+    <li>Resources on focus, well-being, and mental clarity</li>
+    <li>Simple tech-based solutions to boost productivity</li>
+    <li>Community support and practical advice</li>
+  </ul>
+
+  <h2>Our Tutors/instructors</h2>
+  <ul>
+    {%for i in instructors %}
+    <li>{{i.name}}</li>
+    {%endfor%}
+  </ul>
+
+  <h2> total number of students : {{students}}<h2>
+
+  
+
+
+  <p>Thank you for being a part of our journey. Let's stay active — mentally, emotionally, and physically.</p>
+</div>
+{% endblock content %}

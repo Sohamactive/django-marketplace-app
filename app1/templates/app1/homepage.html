@@ -1,0 +1,294 @@
+{% extends "app1/mp_base.html" %}
+
+{% block title %}Merchandise Store{% endblock %}
+
+{% block content %}
+<style>
+    .store-content {
+        padding: 0;
+        margin: -2rem;
+    }
+
+    .store-header {
+        background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+        color: white;
+        text-align: center;
+        padding: 60px 20px;
+        margin-bottom: 40px;
+    }
+
+    .store-title {
+        font-size: 3rem;
+        font-weight: bold;
+        margin-bottom: 10px;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+    }
+
+    .store-subtitle {
+        font-size: 1.2rem;
+        opacity: 0.9;
+    }
+
+    .products-section {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 40px 20px;
+    }
+
+    .section-title {
+        font-size: 2rem;
+        font-weight: bold;
+        text-align: center;
+        margin-bottom: 40px;
+        color: #2c3e50;
+    }
+
+    .product-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 30px;
+        justify-items: center;
+    }
+
+    .product-card {
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        overflow: hidden;
+        transition: all 0.3s ease;
+        max-width: 350px;
+        width: 100%;
+        border: 2px solid transparent;
+    }
+
+    .product-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 35px rgba(142, 68, 173, 0.2);
+        border: 2px solid #8e44ad;
+    }
+
+    .product-image {
+        width: 100%;
+        height: 250px;
+        background: linear-gradient(45deg, #f8f9fa, #e9ecef);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 4rem;
+        position: relative;
+        transition: transform 0.3s ease;
+    }
+
+    .product-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .product-card:hover .product-image {
+        transform: scale(1.05);
+    }
+
+    .product-badge {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        background: #8e44ad;
+        color: white;
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: bold;
+        transition: all 0.3s ease;
+    }
+
+    .product-card:hover .product-badge {
+        background: #9b59b6;
+        transform: scale(1.1);
+    }
+
+    .product-info {
+        padding: 25px;
+    }
+
+    .product-title {
+        font-size: 1.3rem;
+        font-weight: bold;
+        color: #2c3e50;
+        margin-bottom: 10px;
+        line-height: 1.4;
+        transition: color 0.3s ease;
+    }
+
+    .product-card:hover .product-title {
+        color: #8e44ad;
+    }
+
+    .product-description {
+        color: #7f8c8d;
+        font-size: 14px;
+        margin-bottom: 15px;
+        line-height: 1.5;
+    }
+
+    .product-price {
+        font-size: 1.8rem;
+        font-weight: bold;
+        color: #27ae60;
+        margin-bottom: 15px;
+        transition: all 0.3s ease;
+    }
+
+    .product-card:hover .product-price {
+        color: #2ecc71;
+        transform: scale(1.05);
+    }
+
+    .stock-info {
+        margin-bottom: 20px;
+    }
+
+    .stock-available {
+        color: #27ae60;
+        font-size: 14px;
+        font-weight: 600;
+    }
+
+    .product-actions {
+        display: flex;
+        gap: 10px;
+    }
+
+    /* 🎨 Uniform Button Styles */
+    .btn {
+        flex: 1;
+        padding: 12px 20px;
+        border: none;
+        border-radius: 8px;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
+        color: white;
+        border: 2px solid transparent;
+    }
+
+    .btn-primary:hover {
+        background: linear-gradient(135deg, #229954 0%, #27ae60 100%);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 15px rgba(39, 174, 96, 0.3);
+    }
+
+    .btn-secondary {
+        background: transparent;
+        color: #8e44ad;
+        border: 2px solid #8e44ad;
+    }
+
+    .btn-secondary:hover {
+        background: #8e44ad;
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 15px rgba(142, 68, 173, 0.3);
+    }
+
+    /* Enhanced message styling */
+    .alert {
+        padding: 15px;
+        margin-bottom: 20px;
+        border-radius: 8px;
+        border: 2px solid transparent;
+        transition: all 0.3s ease;
+    }
+
+    .alert:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(142, 68, 173, 0.2);
+    }
+
+    .alert-success {
+        background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+        color: #155724;
+        border-color: #8e44ad;
+    }
+
+    .alert-info {
+        background: linear-gradient(135deg, #e7f3ff 0%, #cce7ff 100%);
+        color: #0c5460;
+        border-color: #8e44ad;
+    }
+
+    @media (max-width: 768px) {
+        .store-title {
+            font-size: 2.2rem;
+        }
+        
+        .product-grid {
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+        
+        .product-actions {
+            flex-direction: column;
+        }
+    }
+</style>
+
+<div class="store-content">
+    {% if messages %}
+    {% for message in messages %}
+        <div class="alert alert-{{ message.tags }}">
+            {{ message }}
+        </div>
+    {% endfor %}
+    {% endif %}
+    
+    {% if user.is_authenticated %}
+        {% comment %} <div class="store-header">
+            <h1 class="store-title">Merchandise Store</h1>
+            <p class="store-subtitle">Discover amazing products at great prices</p>
+        </div> {% endcomment %}
+
+        <div class="products-section">
+            <h2 class="section-title">Featured Products</h2>
+            <div class="product-grid">
+                {% for product in products %}
+                <div class="product-card">
+                    <div class="product-image">
+                        {% if product.image %}
+                            <img src="{{ product.image.url }}" alt="{{ product.name }}">
+                        {% else %}
+                            🎧
+                        {% endif %}
+                        <div class="product-badge">New</div>
+                    </div>
+                    <div class="product-info">
+                        <h3 class="product-title">{{ product.name }}</h3>
+                        <p class="product-description">{{ product.description }}</p>
+                        <div class="product-price">₹{{ product.price }}</div>
+                        <div class="stock-info">
+                            {% if product.stock > 20 %}
+                            <span class="stock-available">Stock: {{ product.stock }}</span>
+                            {% else %}
+                            <span class="stock-available" style="color:red">Stock: {{ product.stock }}</span>
+                            {% endif %}
+                        </div>
+                        <div class="product-actions">
+                            <a href="{% url 'app1:add_to_cart' product_id=product.id %}" class="btn btn-primary">Add to Cart</a>
+                            <a href="{% url 'app1:add_to_wishlist' product_id=product.id %}" class="btn btn-secondary">Add to Wishlist</a>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

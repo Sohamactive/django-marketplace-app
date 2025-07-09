@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+
+{% block title %}Add Student{% endblock %}
+
+{% block content %}
+<div class="container" style="max-width: 600px; margin: 50px auto;">
+    <h2>Add New Student</h2>
+    
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        
+        <div style="margin-bottom: 15px;">
+            <label>Name:</label>
+            <input type="text" name="name" required
+                   style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+        </div>
+        
+        <div style="margin-bottom: 15px;">
+            <label>Email:</label>
+            <input type="email" name="email" required
+                   style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+        </div>
+        
+        <div style="margin-bottom: 15px;">
+            <label>Mobile:</label>
+            <input type="text" name="mobile" required
+                   style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+        </div>
+        
+        <div style="margin-bottom: 15px;">
+            <label>Profile Image:</label>
+            <input type="file" name="image" accept="image/*"
+                   style="width: 100%; padding: 8px;">
+        </div>
+        
+        <button type="submit" 
+                style="background: #4f46e5; color: white; padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer;">
+            Add Student
+        </button>
+        
+        <a href="{% url 'app0:home' %}" 
+           style="background: #6b7280; color: white; padding: 10px 20px; text-decoration: none; border-radius: 4px; margin-left: 10px;">
+            Cancel
+        </a>
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Pay Now</title>
+</head>
+<body>
+    <h1>Pay ₹{{ amount|floatformat:2 }}</h1>
+
+    <button id="pay-button" style="background-color: #3399cc; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer;">
+        Pay ₹{{ amount|floatformat:2 }} with Razorpay
+    </button>
+
+    <form id="payment-form" action="/payment/success/" method="POST" style="display: none;">
+        {% csrf_token %}
+        <input type="hidden" name="razorpay_payment_id" id="razorpay_payment_id">
+        <input type="hidden" name="razorpay_order_id" id="razorpay_order_id">
+        <input type="hidden" name="razorpay_signature" id="razorpay_signature">
+    </form>
+
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <script>
+        document.getElementById('pay-button').onclick = function(e) {
+            var options = {
+                "key": "{{ razorpay_key_id }}",
+                "amount": "{{ amount_in_paise|default:50000 }}", // Amount in paise
+                "currency": "INR",
+                "name": "Test App",
+                "description": "Testing UPI Payment",
+                "order_id": "{{ order_id }}",
+                "handler": function(response) {
+                    // Success callback - form submission
+                    document.getElementById('razorpay_payment_id').value = response.razorpay_payment_id;
+                    document.getElementById('razorpay_order_id').value = response.razorpay_order_id;
+                    document.getElementById('razorpay_signature').value = response.razorpay_signature;
+                    document.getElementById('payment-form').submit();
+                },
+                "prefill": {
+                    "name": "Test User",
+                    "email": "test@example.com",
+                    "contact": "9999999999"
+                },
+                "theme": {
+                    "color": "#3399cc"
+                }
+            };
+            
+            var rzp = new Razorpay(options);
+            rzp.on('payment.failed', function (response){
+                alert('Payment Failed: ' + response.error.description);
+            });
+            
+            rzp.open();
+            e.preventDefault();
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,271 @@
+{% extends 'base.html' %}
+{% block title %} ai chat bot {% endblock %}
+
+{% block content %}
+
+<h2> Ask something..... </h2>
+
+<form method="POST">
+    {% csrf_token %}
+
+    <label for="message">Enter your Prompt:</label>
+    <textarea id="message" name="message" rows="3" placeholder="Enter your prompt here" required></textarea>
+
+    <br><br>
+    <button type="submit">SEND</button>
+</form>
+<a href={% url "app0:home" %}>home</a>
+{% endblock %}
+
+{% comment %} {% extends 'base.html' %}
+{% block title %} ai chat bot {% endblock %}
+
+{% block content %}
+<style>
+    body {
+        overflow-x: hidden;
+    }
+    
+    /* Matrix Rain Background */
+    .matrix-bg {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: #000;
+        z-index: -1;
+        overflow: hidden;
+    }
+    
+    .matrix-bg::before {
+        content: "01001001 01101110 01110100 01100101 01101100 01101100 01101001 01100111 01100101 01101110 01100011 01100101 00100000 01000001 01001001 00100000 01000011 01101000 01100001 01110100 00100000 01000010 01101111 01110100 00100000 01001101 01100001 01110100 01110010 01101001 01111000 00100000 01010010 01100001 01101001 01101110 00100000 01000101 01100110 01100110 01100101 01100011 01110100";
+        position: absolute;
+        top: -100%;
+        left: 0;
+        width: 100%;
+        height: 200%;
+        color: #00ff00;
+        font-family: 'Courier New', monospace;
+        font-size: 12px;
+        white-space: pre-wrap;
+        word-break: break-all;
+        animation: matrix-rain 10s linear infinite;
+        opacity: 0.3;
+        line-height: 1.2;
+    }
+    
+    .matrix-bg::after {
+        content: "AI NEURAL NETWORK MATRIX CODE RAIN DIGITAL CONSCIOUSNESS ALGORITHM BINARY DATA STREAM ARTIFICIAL INTELLIGENCE CHATBOT QUANTUM COMPUTING CYBERPUNK FUTURISTIC INTERFACE";
+        position: absolute;
+        top: -50%;
+        right: 0;
+        width: 50%;
+        height: 150%;
+        color: #00cc00;
+        font-family: 'Courier New', monospace;
+        font-size: 10px;
+        white-space: pre-wrap;
+        word-break: break-all;
+        animation: matrix-rain 15s linear infinite reverse;
+        opacity: 0.2;
+        line-height: 1.5;
+    }
+    
+    @keyframes matrix-rain {
+        0% { transform: translateY(-100%); }
+        100% { transform: translateY(100%); }
+    }
+    
+    /* Glowing Container */
+    .chat-container {
+        position: relative;
+        max-width: 700px;
+        margin: 50px auto;
+        padding: 30px;
+        background: rgba(0, 0, 0, 0.85);
+        border: 2px solid #00ff00;
+        border-radius: 15px;
+        box-shadow: 
+            0 0 20px #00ff00,
+            inset 0 0 20px rgba(0, 255, 0, 0.1);
+        backdrop-filter: blur(10px);
+        animation: glow-pulse 3s ease-in-out infinite alternate;
+    }
+    
+    @keyframes glow-pulse {
+        0% { box-shadow: 0 0 20px #00ff00, inset 0 0 20px rgba(0, 255, 0, 0.1); }
+        100% { box-shadow: 0 0 40px #00ff00, inset 0 0 30px rgba(0, 255, 0, 0.2); }
+    }
+    
+    /* Cyberpunk Typography */
+    h2 {
+        text-align: center;
+        color: #00ff00;
+        margin-bottom: 30px;
+        font-family: 'Courier New', monospace;
+        font-size: 28px;
+        text-shadow: 0 0 10px #00ff00;
+        animation: text-flicker 2s ease-in-out infinite alternate;
+        letter-spacing: 2px;
+    }
+    
+    @keyframes text-flicker {
+        0% { text-shadow: 0 0 10px #00ff00; }
+        100% { text-shadow: 0 0 20px #00ff00, 0 0 30px #00ff00; }
+    }
+    
+    form {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+    }
+    
+    label {
+        font-weight: bold;
+        color: #00ff00;
+        font-size: 16px;
+        font-family: 'Courier New', monospace;
+        text-shadow: 0 0 5px #00ff00;
+        letter-spacing: 1px;
+    }
+    
+    /* Cyberpunk Textarea */
+    textarea {
+        padding: 15px;
+        border: 2px solid #00ff00;
+        border-radius: 10px;
+        font-size: 14px;
+        background: rgba(0, 0, 0, 0.7);
+        color: #00ff00;
+        font-family: 'Courier New', monospace;
+        resize: vertical;
+        min-height: 100px;
+        transition: all 0.3s ease;
+        box-shadow: inset 0 0 10px rgba(0, 255, 0, 0.2);
+    }
+    
+    textarea:focus {
+        outline: none;
+        border-color: #00ff00;
+        box-shadow: 
+            0 0 15px #00ff00,
+            inset 0 0 15px rgba(0, 255, 0, 0.3);
+        background: rgba(0, 0, 0, 0.9);
+    }
+    
+    textarea::placeholder {
+        color: #006600;
+        font-family: 'Courier New', monospace;
+    }
+    
+    /* Matrix Button */
+    button {
+        padding: 15px 30px;
+        background: linear-gradient(45deg, #001100, #003300);
+        color: #00ff00;
+        border: 2px solid #00ff00;
+        border-radius: 10px;
+        font-size: 18px;
+        font-weight: bold;
+        font-family: 'Courier New', monospace;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        letter-spacing: 2px;
+        text-shadow: 0 0 5px #00ff00;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    button:hover {
+        background: linear-gradient(45deg, #002200, #004400);
+        box-shadow: 0 0 20px #00ff00;
+        transform: translateY(-2px);
+    }
+    
+    button:active {
+        transform: translateY(0);
+    }
+    
+    /* Scanning Line Effect */
+    button::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(0, 255, 0, 0.4), transparent);
+        transition: left 0.5s;
+    }
+    
+    button:hover::before {
+        left: 100%;
+    }
+    
+    .home-link {
+        text-align: center;
+        margin-top: 25px;
+    }
+    
+    .home-link a {
+        color: #00ff00;
+        text-decoration: none;
+        font-weight: bold;
+        font-family: 'Courier New', monospace;
+        text-shadow: 0 0 5px #00ff00;
+        transition: all 0.3s ease;
+        letter-spacing: 1px;
+    }
+    
+    .home-link a:hover {
+        text-shadow: 0 0 15px #00ff00;
+        color: #44ff44;
+    }
+    
+    /* Scanning lines across screen */
+    .scan-lines {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        z-index: 1;
+        background: repeating-linear-gradient(
+            0deg,
+            transparent,
+            transparent 2px,
+            rgba(0, 255, 0, 0.03) 2px,
+            rgba(0, 255, 0, 0.03) 4px
+        );
+        animation: scan-move 0.1s linear infinite;
+    }
+    
+    @keyframes scan-move {
+        0% { transform: translateY(0); }
+        100% { transform: translateY(4px); }
+    }
+</style>
+
+<div class="matrix-bg"></div>
+<div class="scan-lines"></div>
+
+<div class="chat-container">
+    <h2>&gt; NEURAL INTERFACE ACTIVATED_</h2>
+
+    <form method="POST">
+        {% csrf_token %}
+
+        <label for="message">&gt; ENTER QUERY:</label>
+        <textarea id="message" name="message" rows="3" placeholder="// INPUT YOUR DIGITAL THOUGHTS HERE..." required></textarea>
+
+        <button type="submit">[[ TRANSMIT ]]</button>
+    </form>
+    
+    <div class="home-link">
+        <a href="{% url 'app0:home' %}">← RETURN TO home</a>
+    </div>
+</div>
+{% endblock %}
+ {% endcomment %}

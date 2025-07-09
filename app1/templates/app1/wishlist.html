@@ -1,0 +1,367 @@
+{% extends "app1/mp_base.html" %}
+
+{% block title %}My Wishlist{% endblock %}
+
+{% block content %}
+<style>
+    .wishlist-content {
+        padding: 0;
+        margin: -2rem;
+    }
+
+    .wishlist-header {
+        background: linear-gradient(135deg, #8e44ad 0%, #9b59b6 100%);
+        color: white;
+        text-align: center;
+        padding: 60px 20px;
+        margin-bottom: 40px;
+    }
+
+    .wishlist-title {
+        font-size: 3rem;
+        font-weight: bold;
+        margin-bottom: 10px;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+    }
+
+    .wishlist-subtitle {
+        font-size: 1.2rem;
+        opacity: 0.9;
+    }
+
+    .wishlist-section {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 40px 20px;
+    }
+
+    .section-title {
+        font-size: 2rem;
+        font-weight: bold;
+        text-align: center;
+        margin-bottom: 40px;
+        color: #2c3e50;
+    }
+
+    .wishlist-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 30px;
+        margin-bottom: 40px;
+    }
+
+    .wishlist-item {
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        padding: 25px;
+        transition: all 0.3s ease;
+        border: 2px solid transparent;
+    }
+
+    .wishlist-item:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 35px rgba(142, 68, 173, 0.2);
+        border: 2px solid #8e44ad;
+    }
+
+    .item-image {
+        width: 100%;
+        height: 200px;
+        background: linear-gradient(45deg, #f8f9fa, #e9ecef);
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 3rem;
+        margin-bottom: 20px;
+        transition: transform 0.3s ease;
+    }
+
+    .item-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 12px;
+    }
+
+    .wishlist-item:hover .item-image {
+        transform: scale(1.05);
+    }
+
+    .item-details {
+        text-align: center;
+    }
+
+    .item-name {
+        font-size: 1.4rem;
+        font-weight: bold;
+        color: #2c3e50;
+        margin-bottom: 10px;
+        line-height: 1.4;
+        transition: color 0.3s ease;
+    }
+
+    .wishlist-item:hover .item-name {
+        color: #8e44ad;
+    }
+
+    .item-description {
+        color: #7f8c8d;
+        font-size: 14px;
+        margin-bottom: 15px;
+        line-height: 1.5;
+    }
+
+    .item-price {
+        font-size: 1.5rem;
+        font-weight: bold;
+        color: #27ae60;
+        margin-bottom: 20px;
+        transition: all 0.3s ease;
+    }
+
+    .wishlist-item:hover .item-price {
+        color: #2ecc71;
+        transform: scale(1.05);
+    }
+
+    .item-actions {
+        display: flex;
+        gap: 10px;
+        justify-content: center;
+    }
+
+    /* 🎨 Uniform Button Styles */
+    .btn {
+        flex: 1;
+        padding: 12px 20px;
+        border: none;
+        border-radius: 8px;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        max-width: 120px;
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
+        color: white;
+        border: 2px solid transparent;
+    }
+
+    .btn-primary:hover {
+        background: linear-gradient(135deg, #229954 0%, #27ae60 100%);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 15px rgba(39, 174, 96, 0.3);
+    }
+
+    .btn-danger {
+        background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+        color: white;
+        border: 2px solid transparent;
+    }
+
+    .btn-danger:hover {
+        background: linear-gradient(135deg, #c0392b 0%, #a93226 100%);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 15px rgba(231, 76, 60, 0.3);
+    }
+
+    .btn-outline-purple {
+        background: transparent;
+        color: #8e44ad;
+        border: 2px solid #8e44ad;
+        padding: 15px 30px;
+        font-size: 1rem;
+        max-width: 200px;
+        margin: 40px auto;
+        display: block;
+    }
+
+    .btn-outline-purple:hover {
+        background: #8e44ad;
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 15px rgba(142, 68, 173, 0.3);
+    }
+
+    .empty-wishlist {
+        text-align: center;
+        padding: 80px 20px;
+        color: #7f8c8d;
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+    }
+
+    .empty-wishlist-icon {
+        font-size: 5rem;
+        margin-bottom: 20px;
+        opacity: 0.5;
+    }
+
+    .empty-text {
+        font-size: 1.3rem;
+        margin-bottom: 10px;
+        color: #2c3e50;
+    }
+
+    .empty-subtext {
+        color: #7f8c8d;
+        margin-bottom: 30px;
+    }
+
+    @media (max-width: 768px) {
+        .wishlist-title {
+            font-size: 2.2rem;
+        }
+        
+        .wishlist-grid {
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+        
+        .item-actions {
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .btn {
+            max-width: none;
+        }
+    }
+</style>
+
+<div class="wishlist-content">
+    <!-- Header -->
+    {% comment %} <div class="wishlist-header">
+        <h1 class="wishlist-title">My Wishlist</h1>
+        <p class="wishlist-subtitle">Your favorite items saved for later</p>
+    </div> {% endcomment %}
+
+    <div class="wishlist-section">
+        <h2 class="section-title">Saved Items</h2>
+        
+        <!-- Wishlist Items Grid -->
+        <div class="wishlist-grid">
+            {% for wishlistitem in wishlistitems %}
+            <div class="wishlist-item" data-wishlist-id="{{ wishlistitem.id }}">
+                <div class="item-image">
+                    {% if wishlistitem.product.image %}
+                        <img src="{{ wishlistitem.product.image.url }}" alt="{{ wishlistitem.product.name }}">
+                    {% else %}
+                        🎧
+                    {% endif %}
+                </div>
+                <div class="item-details">
+                    <div class="item-name">{{ wishlistitem.product.name }}</div>
+                    <div class="item-description">{{ wishlistitem.product.description }}</div>
+                    <div class="item-price">₹{{ wishlistitem.product.price }}</div>
+                    <div class="item-actions">
+                         <button class="btn btn-primary add-to-cart-btn" data-product-id="{{ wishlistitem.product.id }}">Add to Cart</button>
+                        <button class="btn btn-danger remove-btn" data-wishlist-id="{{ wishlistitem.id }}">Remove</button>
+
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- Continue Shopping Button -->
+        <a href="{% url 'app1:homepage' %}" class="btn btn-outline-purple">Continue Shopping</a>
+    </div>
+</div>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // GETTING THE CSRF TOKEN
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== "") {
+                const cookies = document.cookie.split(";");
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + "=")) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+
+        const csrftoken = getCookie('csrftoken');
+
+        // ADD TO CART AJAX
+        document.querySelectorAll('.add-to-cart-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                const productId = this.dataset.productId;
+
+                fetch('{% url "app1:add_to_cart_ajax" %}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': csrftoken,
+                    },
+                    body: JSON.stringify({
+                        product_id: productId
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('Item added to cart!');
+                    } else {
+                        alert('Error: ' + data.error);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('An error occurred');
+                });
+            });
+        });
+
+        // REMOVE FROM WISHLIST AJAX
+        document.querySelectorAll('.remove-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                const wishlistId = this.dataset.wishlistId;
+                const wishlistItem = document.querySelector(`[data-wishlist-id="${wishlistId}"]`);
+
+                if (!confirm('Remove this item?')) {
+                    return;
+                }
+
+                fetch('{% url "app1:remove_from_wishlist_ajax" %}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': csrftoken,
+                    },
+                    body: JSON.stringify({
+                        wishlist_id: wishlistId
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        wishlistItem.remove();
+                        alert('Item removed from wishlist!');
+                    } else {
+                        alert('Error: ' + data.error);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('An error occurred');
+                });
+            });
+        });
+    });
+</script>
+
+{% endblock %}

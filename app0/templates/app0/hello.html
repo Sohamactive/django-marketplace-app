@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>AJAX Hello</title>
+</head>
+<body>
+    <h2>Click the button to talk to Django:</h2>
+    <button onclick="sayHello()">Say Hello</button>
+    <p id="response"></p>
+
+    <script>
+        function sayHello() {
+            fetch('/say-hello/')
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('response').innerText = data.message;
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
+    </script>
+</body>
+</html>

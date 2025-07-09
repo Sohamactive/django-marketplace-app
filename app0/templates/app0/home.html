@@ -1,0 +1,224 @@
+{% extends 'base.html' %}
+
+{% block title %}Home - Sohamactive{% endblock %}
+
+{% block content %}
+
+<!--CSS Styling -->
+<style>
+  .container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 40px 20px;
+    text-align: center;
+  }
+
+  .header-title {
+    font-size: 2.5rem;
+    color: #4f46e5;
+    margin-bottom: 20px;
+  }
+
+  .subtitle {
+    font-size: 1.1rem;
+    color: #555;
+    margin-bottom: 40px;
+  }
+
+  .add-student-container {
+    text-align: right;
+    margin-bottom: 30px;
+  }
+
+  .add-student-btn {
+    display: inline-block;
+    background-color: #16a34a;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: bold;
+    transition: background 0.3s;
+  }
+
+  .add-student-btn:hover {
+    background-color: #15803d;
+  }
+
+  .card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 20px;
+  }
+
+  .card {
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    transition: transform 0.2s;
+  }
+
+  .card:hover {
+    transform: translateY(-5px);
+  }
+
+  .profile-img {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: 10px;
+    border: 2px solid #4f46e5;
+  }
+
+  .card h3 {
+    font-size: 1.2rem;
+    color: #333;
+    margin-bottom: 6px;
+  }
+
+  .card p {
+    font-size: 0.9rem;
+    color: #666;
+    margin: 2px 0;
+  }
+
+  .initial-placeholder {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background-color: #bbb;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    color: white;
+    margin: 0 auto 10px;
+  }
+
+  .enroll-btn {
+    display: inline-block;
+    margin-top: 10px;
+    background-color: #0ea5e9;
+    color: white;
+    padding: 8px 16px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: bold;
+    transition: background 0.3s;
+  }
+
+  .enroll-btn:hover {
+    background-color: #0284c7;
+  }
+</style>
+
+<!--Main Container-->
+<div class="container">
+
+  <!-- Welcome Header -->
+  <h1 class="header-title">Welcome to Sohamactive</h1>
+
+  <p class="subtitle">
+    Start exploring and take the first step toward a more balanced and active lifestyle!
+  </p>
+
+  <!-- Add New Student Button (STATIC) -->
+  <div class="add-student-container">
+    <a href="{% url 'app0:add_student'%}" class="add-student-btn">➕ Add Student</a>
+  </div>
+
+  <!-- Student Cards Grid-->
+  <div class="card-grid">
+
+    <!-- Loop Through Students-->
+    {% for student in students %}
+
+      <div class="card">
+
+        <!-- Profile Image or Initial-->
+        {% if student.image %}
+          <img src="{{ student.image.url }}" alt="{{ student.name }}" class="profile-img">
+        {% else %}
+          <div class="initial-placeholder">
+            {{ student.name|slice:":1" }}
+          </div>
+        {% endif %}
+
+        <!--Student Info-->
+        <h3>{{ student.name }}</h3>
+        <p>📧 {{ student.email }}</p>
+        <p>📞 {{ student.mobile }}</p>
+
+        <!-- Enrolled Courses-->
+        <p><strong>Courses Enrolled:</strong></p>
+
+        {% comment %} {% for enrollment in student.enrollment_set.all %}
+          <a href = "{% url 'app0:course_details' course_id=enrollment.courseId.id %}"><p>📚{{ enrollment.courseId.course_name }}</p></a>
+        {% empty %}
+          <p>📚 No courses enrolled</p>
+        {% endfor %} {% endcomment %}
+
+        {% for enrollment in enrollments %}
+          {% if enrollment.studentId.id == student.id %}
+            <p><a href = "{% url 'app0:course_details' course_id=enrollment.courseId.id %}">
+              📚{{ enrollment.courseId.course_name }}
+            </a></p>
+          {% endif %}
+        {% empty %}
+          <p> 📚 NO COURSES ENROLLED </p>
+        {% endfor %}
+
+        <!-- Assigned Instructors-->
+        <p><strong>Instructors Assigned:</strong></p>
+
+        {% comment %} {% for instructor_assigned in student.enrollment_set.all %}
+          <p>👨‍🏫 {{ instructor_assigned.instructorId.name }}</p>
+        {% empty %}
+          <p>No instructor found</p>
+        {% endfor %} {% endcomment %}
+
+        {% for enrollment in enrollments %}
+          {% if enrollment.studentId.id == student.id %}
+            <p><a href="{% url "app0:instructor_details" inst_id=enrollment.instructorId.id %}"> 
+              {{ enrollment.instructorId.name }}
+            </a></p>
+          {% endif %}
+        {% empty %}
+          <p> NO instructor found </p>
+        {% endfor %}
+
+        <!--EDIT & DELETE BUTTONS-->
+        <div style="margin-top: 15px; text-align: center;">
+
+          <a href="{% url 'app0:edit_student' student_id=student.id %}" 
+            style="background: #4f46e5; color: white; padding: 8px 16px; text-decoration: none; border-radius: 4px; margin-right: 10px;">
+            ✏️ Edit
+          </a>
+
+          <a href="{% url 'app0:delete_student' student_id=student.id %}" 
+            style="background: #dc2626; color: white; padding: 8px 16px; text-decoration: none; border-radius: 4px;">
+            🗑️ Delete
+          </a>
+
+          <!--STATIC ENROLL BUTTON-->
+          <a href='{% url 'app0:enroll_student' student_id=student.id%}' class="enroll-btn">➕ Enroll</a>
+
+        </div>
+
+      </div>
+
+    {% empty %}
+      <!-- ==========================
+           No Students Found
+      =========================== -->
+      <p>No students found.</p>
+    {% endfor %}
+
+  </div>
+
+</div>
+
+{% endblock %}

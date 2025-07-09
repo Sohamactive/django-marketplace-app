@@ -1,0 +1,44 @@
+-- database: ../db.sqlite3
+
+SELECT * FROM account_emailaddress
+ORDER BY `verified` ASC;
+
+CREATE TABLE "app1_product" (
+    "id" integer NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "name" varchar(50) NOT NULL,
+    "description" text NOT NULL,
+    "price" decimal(10, 2) NOT NULL,
+    "image" varchar(100) NOT NULL DEFAULT 'images/default.jpg',
+    "stock" integer NOT NULL,
+    "created_at" datetime NOT NULL,
+    "category" varchar(50) NOT NULL,
+    "size_option" varchar(50) NOT NULL
+);
+CREATE TABLE "app1_cartitem" (
+    "id" integer NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "user_id" integer NOT NULL REFERENCES "auth_user" ("id") DEFERRABLE INITIALLY DEFERRED,
+    "product_id" integer NOT NULL REFERENCES "app1_product" ("id") DEFERRABLE INITIALLY DEFERRED,
+    "quantity" integer NOT NULL,
+    "added_at" datetime NOT NULL
+);
+CREATE TABLE "app1_wishlistitem" (
+    "id" integer NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "user_id" integer NOT NULL REFERENCES "auth_user" ("id") DEFERRABLE INITIALLY DEFERRED,
+    "product_id" integer NOT NULL REFERENCES "app1_product" ("id") DEFERRABLE INITIALLY DEFERRED,
+    "added_at" datetime NOT NULL
+);
+CREATE TABLE "app1_order" (
+    "id" integer NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "user_id" integer NOT NULL REFERENCES "auth_user" ("id") DEFERRABLE INITIALLY DEFERRED,
+    "created_at" datetime NOT NULL,
+    "total_price" decimal(10, 2) NOT NULL,
+    "address" text NOT NULL,
+    "payment_status" varchar(50) NOT NULL
+);
+CREATE TABLE "app1_orderitem" (
+    "id" integer NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "order_id" integer NOT NULL REFERENCES "app1_order" ("id") DEFERRABLE INITIALLY DEFERRED,
+    "product_id" integer NOT NULL REFERENCES "app1_product" ("id") DEFERRABLE INITIALLY DEFERRED,
+    "quantity" integer NOT NULL,
+    "price_at_order" decimal(10, 2) NOT NULL
+);

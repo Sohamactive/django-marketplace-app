@@ -1,0 +1,26 @@
+# Ignore Python cache
+__pycache__/
+*.py[cod]
+
+# Ignore SQLite DB (if you don't want it uploaded)
+*.sqlite3
+
+# Ignore secrets
+.env
+
+# Ignore virtual environment
+.venv/
+venv/
+env/
+
+# Ignore static files collected for deployment
+/staticfiles
+/media
+
+# IDE stuff
+.vscode/
+.idea/
+
+# OS generated files
+.DS_Store
+Thumbs.db

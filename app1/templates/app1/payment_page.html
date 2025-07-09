@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Secure Payment - Pay Now</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .payment-container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            padding: 40px;
+            max-width: 450px;
+            width: 100%;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .payment-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #3399cc, #667eea);
+        }
+
+        .payment-header {
+            margin-bottom: 30px;
+        }
+
+        .payment-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #3399cc, #667eea);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            box-shadow: 0 10px 30px rgba(51, 153, 204, 0.3);
+        }
+
+        .payment-icon i {
+            font-size: 32px;
+            color: white;
+        }
+
+        h1 {
+            color: #2c3e50;
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: #7f8c8d;
+            font-size: 16px;
+            margin-bottom: 30px;
+        }
+
+        .amount-display {
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 30px;
+            border: 1px solid #dee2e6;
+        }
+
+        .amount-label {
+            color: #6c757d;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 5px;
+        }
+
+        .amount-value {
+            font-size: 36px;
+            font-weight: 800;
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+
+        .amount-description {
+            color: #6c757d;
+            font-size: 14px;
+        }
+
+        .payment-methods {
+            margin-bottom: 30px;
+        }
+
+        .method-title {
+            color: #495057;
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+
+        .payment-options {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .payment-option {
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            padding: 10px 15px;
+            font-size: 12px;
+            color: #495057;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .payment-option i {
+            font-size: 16px;
+        }
+
+        #pay-button {
+            background: linear-gradient(135deg, #3399cc, #667eea);
+            color: white;
+            border: none;
+            border-radius: 15px;
+            padding: 18px 40px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 25px rgba(51, 153, 204, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        #pay-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 35px rgba(51, 153, 204, 0.4);
+        }
+
+        #pay-button:active {
+            transform: translateY(0);
+        }
+
+        #pay-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        #pay-button:hover::before {
+            left: 100%;
+        }
+
+        .security-info {
+            margin-top: 25px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            border-left: 4px solid #28a745;
+        }
+
+        .security-info h4 {
+            color: #28a745;
+            font-size: 14px;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .security-info p {
+            color: #6c757d;
+            font-size: 12px;
+            line-height: 1.5;
+        }
+
+        .powered-by {
+            margin-top: 20px;
+            color: #adb5bd;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+        }
+
+        .powered-by img {
+            height: 20px;
+            opacity: 0.7;
+        }
+
+        @media (max-width: 480px) {
+            .payment-container {
+                padding: 30px 20px;
+                margin: 10px;
+            }
+
+            h1 {
+                font-size: 24px;
+            }
+
+            .amount-value {
+                font-size: 30px;
+            }
+
+            .payment-options {
+                gap: 8px;
+            }
+
+            .payment-option {
+                padding: 8px 12px;
+                font-size: 11px;
+            }
+        }
+
+        /* Loading animation */
+        .loading {
+            pointer-events: none;
+            opacity: 0.7;
+        }
+
+        .loading::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 20px;
+            height: 20px;
+            margin: -10px 0 0 -10px;
+            border: 2px solid transparent;
+            border-top: 2px solid white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="payment-container">
+        <div class="payment-header">
+            <div class="payment-icon">
+                <i class="fas fa-credit-card"></i>
+            </div>
+            <h1>Secure Payment</h1>
+            <p class="subtitle">Complete your purchase safely and securely</p>
+        </div>
+
+        <div class="amount-display">
+            <div class="amount-label">Total Amount</div>
+            <div class="amount-value">₹{{ amount|floatformat:2 }}</div>
+            <div class="amount-description">Including all taxes and fees</div>
+        </div>
+
+        <div class="payment-methods">
+            <div class="method-title">Accepted Payment Methods</div>
+            <div class="payment-options">
+                <div class="payment-option">
+                    <i class="fab fa-cc-visa"></i>
+                    <span>Visa</span>
+                </div>
+                <div class="payment-option">
+                    <i class="fab fa-cc-mastercard"></i>
+                    <span>Mastercard</span>
+                </div>
+                <div class="payment-option">
+                    <i class="fas fa-mobile-alt"></i>
+                    <span>UPI</span>
+                </div>
+                <div class="payment-option">
+                    <i class="fas fa-university"></i>
+                    <span>Net Banking</span>
+                </div>
+                <div class="payment-option">
+                    <i class="fas fa-wallet"></i>
+                    <span>Wallets</span>
+                </div>
+            </div>
+        </div>
+
+        <button id="pay-button">
+            <i class="fas fa-lock"></i>
+            Pay ₹{{ amount|floatformat:2 }} Securely
+        </button>
+
+        <div class="security-info">
+            <h4>
+                <i class="fas fa-shield-alt"></i>
+                256-bit SSL Encrypted
+            </h4>
+            <p>Your payment information is protected with bank-level security. We never store your card details.</p>
+        </div>
+
+        <div class="powered-by">
+            <span>Powered by</span>
+            <strong style="color: #3399cc;">Razorpay</strong>
+            <i class="fas fa-check-circle" style="color: #28a745;"></i>
+        </div>
+    </div>
+
+    <form id="payment-form" action="{% url 'app1:payment_success' %}" method="POST" style="display: none;">
+        {% csrf_token %}
+        <input type="hidden" name="razorpay_payment_id" id="razorpay_payment_id">
+        <input type="hidden" name="razorpay_order_id" id="razorpay_order_id">
+        <input type="hidden" name="razorpay_signature" id="razorpay_signature">
+    </form>
+
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <script>
+        document.getElementById('pay-button').onclick = function(e) {
+            e.preventDefault();
+            
+            // Add loading state
+            const button = this;
+            const originalText = button.innerHTML;
+            button.classList.add('loading');
+            button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+            button.disabled = true;
+
+            var options = {
+                "key": "{{ razorpay_key_id }}",
+                "amount": "{{ amount_in_paise|default:50000 }}",
+                "currency": "INR",
+                "name": "Your Store Name",
+                "description": "Purchase from Your Store",
+                "order_id": "{{ order_id }}",
+                "handler": function(response) {
+                    document.getElementById('razorpay_payment_id').value = response.razorpay_payment_id;
+                    document.getElementById('razorpay_order_id').value = response.razorpay_order_id;
+                    document.getElementById('razorpay_signature').value = response.razorpay_signature;
+                    document.getElementById('payment-form').submit();
+                },
+                "prefill": {
+                    "name": "{{ user.first_name }} {{ user.last_name }}",
+                    "email": "{{ user.email }}",
+                    "contact": "{{ user.phone|default:'9999999999' }}"
+                },
+                "theme": {
+                    "color": "#3399cc"
+                },
+                "modal": {
+                    "ondismiss": function() {
+                        // Reset button state if payment is cancelled
+                        button.classList.remove('loading');
+                        button.innerHTML = originalText;
+                        button.disabled = false;
+                    }
+                }
+            };
+            
+            var rzp = new Razorpay(options);
+            
+            rzp.on('payment.failed', function (response){
+                alert('Payment Failed: ' + response.error.description);
+                // Reset button state
+                button.classList.remove('loading');
+                button.innerHTML = originalText;
+                button.disabled = false;
+            });
+            
+            rzp.open();
+        }
+    </script>
+</body>
+</html>

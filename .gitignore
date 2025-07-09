@@ -2,8 +2,6 @@
 __pycache__/
 *.py[cod]
 
-# Ignore SQLite DB (if you don't want it uploaded)
-*.sqlite3
 
 # Ignore secrets
 .env

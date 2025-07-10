@@ -32,9 +32,9 @@ urlpatterns = [
     # path('accounts/',include('allauth.urls')), # allauth
     # path('login/', auth_views.LoginView.as_view(template_name='login.html'), name='login'),
     # path('logout/', auth_views.LogoutView.as_view(), name='logout'),
-    path('login/auth0', login_auth0, name='login'),
-    path('callback', callback, name='callback'),
-    path('logout/auth0', logout_auth0, name='logout'),
+    path('login/auth0/', login_auth0, name='login'),
+    path('callback/', callback, name='callback'),
+    path('logout/auth0/', logout_auth0, name='logout'),
 
 ]
 

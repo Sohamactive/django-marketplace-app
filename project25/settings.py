@@ -198,20 +198,33 @@ GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 
 
 # Auth0 settings
-AUTH0_DOMAIN = os.getenv("AUTH0_DOMAIN")  # Replace with your Auth0 domain
-AUTH0_CLIENT_ID = os.getenv("AUTH0_CLIENT_ID") # Replace with your Auth0 Client ID
-AUTH0_CLIENT_SECRET =  os.getenv("AUTH0_CLIENT_SECRET")  # Replace with your Auth0 Client Secret
+# Auth0 Configuration
+AUTH0_DOMAIN = os.getenv("AUTH0_DOMAIN")
+AUTH0_CLIENT_ID = os.getenv("AUTH0_CLIENT_ID")
+AUTH0_CLIENT_SECRET = os.getenv("AUTH0_CLIENT_SECRET")
+
+if not AUTH0_DOMAIN:
+    raise ValueError("AUTH0_DOMAIN environment variable is not set.")
+if not AUTH0_CLIENT_ID:
+    raise ValueError("AUTH0_CLIENT_ID environment variable is not set.")
+if not AUTH0_CLIENT_SECRET:
+    raise ValueError("AUTH0_CLIENT_SECRET environment variable is not set.")
+
 AUTH0_ISSUER = f'https://{AUTH0_DOMAIN}/'
 AUTH0_AUDIENCE = ''  # Optional: Set if you have a specific API audience
-
 
 # Add authentication backends
 AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',  # Keep default Django auth
-    'app1.auth0backend.Auth0Backend',  # Custom Auth0 backend (we'll create this)
+    'app1.auth0backend.Auth0Backend',  # Custom Auth0 backend
 ]
 
 # Redirect URLs
 LOGIN_URL = '/login/auth0'
 LOGOUT_URL = '/logout/auth0'
-LOGIN_REDIRECT_URL = '/marketplace/'  # Redirect to marketplace after login
+LOGIN_REDIRECT_URL = '/marketplace/'
+
+# Session configuration (important for Auth0 state)
+SESSION_COOKIE_SECURE = not DEBUG  # Use secure cookies in production
+SESSION_COOKIE_HTTPONLY = True
+SESSION_COOKIE_SAMESITE = 'Lax'

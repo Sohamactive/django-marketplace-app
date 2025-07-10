@@ -19,25 +19,55 @@ from datetime import datetime, timedelta
 
 
 def login_auth0(request):
+    # Generate CSRF state token
+    state_token = secrets.token_urlsafe(32)
+    request.session['auth0_state'] = state_token
+    
+    # Get the next URL and include it in state
+    next_url = request.GET.get('next', '/marketplace/')
+    state_data = f"{state_token}|{next_url}"
+    
+    # Build redirect URI dynamically
+    redirect_uri = request.build_absolute_uri(reverse('callback'))
+    
     # Construct Auth0 authorization URL
     auth0_url = (
         f"https://{settings.AUTH0_DOMAIN}/authorize?"
-        f"response_type=code&client_id={settings.AUTH0_CLIENT_ID}&"
-        f"redirect_uri={urllib.parse.quote('http://localhost:8000/callback')}&"
-        f"scope=openid%20profile%20email"
+        f"response_type=code&"
+        f"client_id={settings.AUTH0_CLIENT_ID}&"
+        f"redirect_uri={urllib.parse.quote(redirect_uri)}&"
+        f"scope=openid%20profile%20email&"
+        f"state={urllib.parse.quote(state_data)}"
     )
-    # Preserve the next parameter to redirect back to the original page
-    next_url = request.GET.get('next', '/marketplace/')
-    if next_url:
-        auth0_url += f"&state={urllib.parse.quote(next_url)}"
+    
     return redirect(auth0_url)
 
 def callback(request):
-    # Handle Auth0 callback
+    # Verify state parameter for CSRF protection
+    state_param = request.GET.get('state', '')
+    if '|' in state_param:
+        received_state, next_url = state_param.split('|', 1)
+    else:
+        received_state = state_param
+        next_url = '/marketplace/'
+    
+    expected_state = request.session.get('auth0_state')
+    if not expected_state or received_state != expected_state:
+        return HttpResponse("Invalid state parameter", status=400)
+    
+    # Clean up session
+    del request.session['auth0_state']
+    
+    # Get authorization code
     code = request.GET.get('code')
     if not code:
-        return HttpResponse("Error: No code provided", status=400)
-
+        error = request.GET.get('error', 'No code provided')
+        error_description = request.GET.get('error_description', '')
+        return HttpResponse(f"Auth0 Error: {error} - {error_description}", status=400)
+    
+    # Build redirect URI (same as in login)
+    redirect_uri = request.build_absolute_uri(reverse('callback'))
+    
     # Exchange code for token
     token_url = f"https://{settings.AUTH0_DOMAIN}/oauth/token"
     token_data = {
@@ -45,33 +75,43 @@ def callback(request):
         'client_id': settings.AUTH0_CLIENT_ID,
         'client_secret': settings.AUTH0_CLIENT_SECRET,
         'code': code,
-        'redirect_uri': 'http://localhost:8000/callback',
+        'redirect_uri': redirect_uri,
     }
-    response = requests.post(token_url, json=token_data)
-    if response.status_code != 200:
-        return HttpResponse("Error exchanging code for token", status=400)
-
-    token_info = response.json()
+    
+    try:
+        response = requests.post(token_url, json=token_data, timeout=10)
+        response.raise_for_status()
+        token_info = response.json()
+    except requests.exceptions.RequestException as e:
+        return HttpResponse(f"Error exchanging code for token: {str(e)}", status=400)
+    
     id_token = token_info.get('id_token')
-
+    if not id_token:
+        return HttpResponse("No ID token received", status=400)
+    
     # Authenticate user using the custom Auth0 backend
     user = authenticate(request, token=id_token)
     if user:
         login(request, user, backend='app1.auth0backend.Auth0Backend')
-        # Redirect to the 'next' URL or default to marketplace
-        next_url = request.GET.get('state', '/marketplace/')
         return redirect(next_url)
+    
     return HttpResponse("Authentication failed", status=401)
 
 def logout_auth0(request):
     logout(request)
+    
+    # Build return URL dynamically
+    return_url = request.build_absolute_uri('/')
+    
     # Redirect to Auth0 logout endpoint
-    next_url = request.GET.get('next', 'http://localhost:8000')
-    return redirect(
+    logout_url = (
         f"https://{settings.AUTH0_DOMAIN}/v2/logout?"
         f"client_id={settings.AUTH0_CLIENT_ID}&"
-        f"returnTo={urllib.parse.quote('http://localhost:8000')}"
+        f"returnTo={urllib.parse.quote(return_url)}"
     )
+    
+    return redirect(logout_url)
+
 
 def homepage(request):
     products = Product.objects.all()
